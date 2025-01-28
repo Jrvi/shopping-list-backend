@@ -1,6 +1,6 @@
 # Shopping List Backend
 
-This is a backend service for managing a shopping list. It provides a RESTful API to manage products and categories.
+This is a backend service for managing a shopping list. It provides a RESTful API to manage products, categories, and shopping lists.
 
 ## Requirements
 
@@ -42,7 +42,8 @@ This is a backend service for managing a shopping list. It provides a RESTful AP
             {
                 "id": "1",
                 "title": "Milk",
-                "category_id": "1"
+                "category_id": "1",
+                "list_id": "1"
             },
             ...
         ]
@@ -55,9 +56,13 @@ This is a backend service for managing a shopping list. It provides a RESTful AP
         {
             "id": "1",
             "title": "Milk",
-            "category_id": "1"
+            "category_id": "1",
+            "list_id": "1"
         }
         ```
+
+- **DELETE /product/:id**
+    - Deletes a product by ID.
 
 ### Categories
 
@@ -83,6 +88,44 @@ This is a backend service for managing a shopping list. It provides a RESTful AP
             "title": "Dairy"
         }
         ```
+
+### Lists
+
+- **GET /list**
+    - Retrieves a list of all shopping lists.
+    - Response:
+        ```json
+        [
+            {
+                "id": "1",
+                "title": "Weekly Groceries"
+            },
+            ...
+        ]
+        ```
+
+- **GET /list/:id**
+    - Retrieves a shopping list by ID.
+    - Response:
+        ```json
+        {
+            "id": "1",
+            "title": "Weekly Groceries"
+        }
+        ```
+
+- **POST /list**
+    - Adds a new shopping list.
+    - Request body:
+        ```json
+        {
+            "id": "1",
+            "title": "Weekly Groceries"
+        }
+        ```
+
+- **DELETE /list/:id**
+    - Deletes a shopping list by ID.
 
 ## Running the Server
 
