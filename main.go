@@ -9,5 +9,5 @@ import (
 func main() {
 	database.InitDB()
 	router := routes.SetupRouter()
-	router.Run("localhost:8080")
+	router.Run("localhost:3001")
 }
