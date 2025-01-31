@@ -2,6 +2,7 @@ package routes
 
 import (
 	"shopping-list-backend/internal/handlers"
+	"shopping-list-backend/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,15 +10,27 @@ import (
 func SetupRouter() *gin.Engine {
 	router := gin.Default()
 
-	router.GET("/product", handlers.GetProducts)
-	router.POST("/product", handlers.PostProduct)
-	router.DELETE("/product/:id", handlers.DeteleProduct)
-	router.GET("/category", handlers.GetCategories)
-	router.POST("/category", handlers.PostCategory)
-	router.GET("/list", handlers.GetLists)
-	router.GET("/list/:id", handlers.GetList)
-	router.POST("list", handlers.PostList)
-	router.DELETE("/list/:id", handlers.DeteleList)
+	// Public routes (do not require authentication)
+	publicRoutes := router.Group("/")
+	{
+		publicRoutes.POST("/login", handlers.Login)
+		publicRoutes.POST("/register", handlers.Register)
+	}
+
+	// Protected routes (require authentication)
+	protectedRoutes := router.Group("/api")
+	protectedRoutes.Use(middleware.AuthenticationMiddleware())
+	{
+		protectedRoutes.GET("/product", handlers.GetProducts)
+		protectedRoutes.POST("/product", handlers.PostProduct)
+		protectedRoutes.DELETE("/product/:id", handlers.DeteleProduct)
+		protectedRoutes.GET("/category", handlers.GetCategories)
+		protectedRoutes.POST("/category", handlers.PostCategory)
+		protectedRoutes.GET("/list", handlers.GetLists)
+		protectedRoutes.GET("/list/:id", handlers.GetList)
+		protectedRoutes.POST("list", handlers.PostList)
+		protectedRoutes.DELETE("/list/:id", handlers.DeteleList)
+	}
 
 	return router
 }
