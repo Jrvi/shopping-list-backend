@@ -44,7 +44,11 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	c.JSON(http.StatusOK, gin.H{
+		"user_id":  user.ID,
+		"username": user.Username,
+		"token":    token,
+	})
 }
 
 // Function for registering a new user

@@ -13,9 +13,12 @@ import (
 
 // GetLists responds with the list of all shopping-lists as JSON.
 func GetLists(c *gin.Context) {
-	rows, err := database.DB.Query("SELECT * FROM lists")
+	userID := c.GetInt("user_id")
+
+	rows, err := database.DB.Query("SELECT * FROM lists WHERE user_id = ?", userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 	defer rows.Close()
 
@@ -34,6 +37,7 @@ func GetLists(c *gin.Context) {
 
 // GetList responds with the shopping-list as JSON.
 func GetList(c *gin.Context) {
+	userID := c.GetInt("user_id")
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -41,7 +45,7 @@ func GetList(c *gin.Context) {
 	}
 
 	var list models.List
-	err = database.DB.QueryRow("SELECT id, title FROM lists WHERE id = ?", id).Scan(&list.ID, &list.Title)
+	err = database.DB.QueryRow("SELECT id, title FROM lists WHERE id = ? AND user_id = ?", id, userID).Scan(&list.ID, &list.Title)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusNotFound, gin.H{"error": "List not found"})
@@ -57,6 +61,7 @@ func GetList(c *gin.Context) {
 // PostList adds a list from JSON received in the request body.
 func PostList(c *gin.Context) {
 	var newList models.List
+	userID := c.GetInt("user_id")
 
 	// Call BindJSON to bind the received JSON to newList
 	if err := c.BindJSON(&newList); err != nil {
@@ -65,7 +70,7 @@ func PostList(c *gin.Context) {
 	}
 
 	// Add the new list to the database
-	_, err := database.DB.Exec("INSERT INTO lists (id, title) VALUES (?, ?)", newList.ID, newList.Title)
+	_, err := database.DB.Exec("INSERT INTO lists (id, title, user_id) VALUES (?, ?, ?)", newList.ID, newList.Title, userID)
 	if err != nil {
 		c.JSON((http.StatusInternalServerError), gin.H{"error": err.Error()})
 		return
