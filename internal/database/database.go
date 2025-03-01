@@ -5,23 +5,25 @@ import (
 	"fmt"
 	"log"
 
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 var DB *sql.DB
 
 func InitDB() {
 	var err error
-	dsn := "shopping:salainen@tcp(localhost:3306)/shopping_list_db"
-	DB, err = sql.Open("mysql", dsn)
+	// sqlite-tietokanta luodaan, jos sellaista ei ole
+	dsn := "database.sqlite"
+	DB, err = sql.Open("sqlite3", dsn)
 	if err != nil {
-		log.Fatalf("Error opening database: %v", err)
+		log.Fatalf("Virhe avatessa tietokantaa: %v", err)
 	}
 
+	// Varmistetaan, että yhteys toimii
 	err = DB.Ping()
 	if err != nil {
-		log.Fatalf("Error connecting to the database: %v", err)
+		log.Fatalf("Virhe yhdistäessä tietokantaan: %v", err)
 	}
 
-	fmt.Println("Connected to the database successfully")
+	fmt.Println("Yhteys tietokantaan muodostettu")
 }

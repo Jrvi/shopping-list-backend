@@ -21,7 +21,7 @@ func Login(c *gin.Context) {
 	}
 
 	var user models.User
-	err := database.DB.QueryRow("SELECT id, username, password FROM users WHERE username = ?", loginData.Username).Scan(&user.ID, &user.Username, &user.Password)
+	err := database.DB.QueryRow("SELECT id, username, password FROM user WHERE username = ?", loginData.Username).Scan(&user.ID, &user.Username, &user.Password)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
@@ -69,7 +69,7 @@ func Register(c *gin.Context) {
 	user.Password = string(hashedPassword)
 
 	// Insert the user into the database
-	_, err = database.DB.Exec("INSERT INTO users (username, password) VALUES (?, ?)", user.Username, user.Password)
+	_, err = database.DB.Exec("INSERT INTO user (username, password) VALUES (?, ?)", user.Username, user.Password)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusConflict, gin.H{"error": "Username already exists"})

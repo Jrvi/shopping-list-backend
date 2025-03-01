@@ -1,36 +1,39 @@
-CREATE DATABASE IF NOT EXISTS shopping_list_db;
-
-USE shopping_list_db;
-
-CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+-- Käyttäjätaulu
+CREATE TABLE IF NOT EXISTS user (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     username VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS categories (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+-- Kategoriataulu
+CREATE TABLE IF NOT EXISTS category (
+    id INTEGER PRIMARY KEY  AUTOINCREMENT,
     title VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS lists (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+-- Listataulu
+CREATE TABLE IF NOT EXISTS list (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     title VARCHAR(255) NOT NULL,
+    is_shared INT NOT NULL DEFAULT 0,
     user_id INT,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (user_id) REFERENCES user(id)
 );
 
-CREATE TABLE IF NOT EXISTS products (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+-- Jaettu listataulu
+CREATE TABLE list_shares (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    list_id INT NOT NULL,
+    shared_with_user_id INT NOT NULL,
+    FOREIGN KEY (list_id) REFERENCES list(id)
+);
+
+-- Tuotetaulu
+CREATE TABLE IF NOT EXISTS product (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     title VARCHAR(255) NOT NULL,
     category_id INT,
     list_id INT,
-    FOREIGN KEY (category_id) REFERENCES categories(id),
-    FOREIGN KEY (list_id) REFERENCES lists(id)
+    FOREIGN KEY (category_id) REFERENCES category(id),
+    FOREIGN KEY (list_id) REFERENCES list(id)
 );
-
-CREATE USER 'shopping'@'localhost' IDENTIFIED BY 'salainen';
-
-GRANT ALL PRIVILEGES ON shopping_list_db.* TO 'shopping'@'localhost';
-
-FLUSH PRIVILEGES;

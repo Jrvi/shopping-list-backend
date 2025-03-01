@@ -1,8 +1,8 @@
 package models
 
 type Product struct {
-	ID         string `json:"id"`
+	ID         uint   `json:"id"`
 	Title      string `json:"title"`
-	CategoryID string `json:"category_id"`
-	ListID     string `json:"list_id"`
+	CategoryID uint   `json:"category_id"`
+	ListID     uint   `json:"list_id"`
 }

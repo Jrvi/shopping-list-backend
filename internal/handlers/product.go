@@ -13,7 +13,7 @@ import (
 
 // GetProducts responds with the list of all products as JSON.
 func GetProducts(c *gin.Context) {
-	rows, err := database.DB.Query("SELECT * FROM products")
+	rows, err := database.DB.Query("SELECT * FROM product")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -45,7 +45,7 @@ func PostProduct(c *gin.Context) {
 
 	// Check if the category exists
 	var category models.Category
-	err := database.DB.QueryRow("SELECT id, title FROM categories WHERE id = ?", newProduct.CategoryID).Scan(&category.ID, &category.Title)
+	err := database.DB.QueryRow("SELECT id, title FROM category WHERE id = ?", newProduct.CategoryID).Scan(&category.ID, &category.Title)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Category not found"})
@@ -57,7 +57,7 @@ func PostProduct(c *gin.Context) {
 
 	// Check if the list exists
 	var list models.List
-	err = database.DB.QueryRow("SELECT id, title FROM lists WHERE id = ?", newProduct.ListID).Scan(&list.ID, &list.Title)
+	err = database.DB.QueryRow("SELECT id, title FROM list WHERE id = ?", newProduct.ListID).Scan(&list.ID, &list.Title)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "List not found"})
@@ -68,7 +68,7 @@ func PostProduct(c *gin.Context) {
 	}
 
 	// Add the new product to the database
-	_, err = database.DB.Exec("INSERT INTO products (id, title, category_id, list_id) VALUES (?, ?, ?, ?)", newProduct.ID, newProduct.Title, newProduct.CategoryID, newProduct.ListID)
+	_, err = database.DB.Exec("INSERT INTO product (title, category_id, list_id) VALUES (?, ?, ?)", newProduct.Title, newProduct.CategoryID, newProduct.ListID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -84,7 +84,7 @@ func DeteleProduct(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	_, err = database.DB.Exec("DELETE FROM products WHERE id = ?", id)
+	_, err = database.DB.Exec("DELETE FROM product WHERE id = ?", id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

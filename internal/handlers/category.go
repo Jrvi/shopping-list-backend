@@ -11,7 +11,7 @@ import (
 
 // GetCategories responds with the list of all categories as JSON.
 func GetCategories(c *gin.Context) {
-	rows, err := database.DB.Query("SELECT id, title FROM categories")
+	rows, err := database.DB.Query("SELECT id, title FROM category")
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -42,7 +42,7 @@ func PostCategory(c *gin.Context) {
 	}
 
 	// Add the new category to the database
-	_, err := database.DB.Exec("INSERT INTO categories (id, title) VALUES (?, ?)", newCategory.ID, newCategory.Title)
+	_, err := database.DB.Exec("INSERT INTO category (title) VALUES (?)", newCategory.Title)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

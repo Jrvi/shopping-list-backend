@@ -30,6 +30,7 @@ func SetupRouter() *gin.Engine {
 		protectedRoutes.GET("/list/:id", handlers.GetList)
 		protectedRoutes.POST("list", handlers.PostList)
 		protectedRoutes.DELETE("/list/:id", handlers.DeteleList)
+		protectedRoutes.PATCH("/list/share", handlers.PatchListShare)
 	}
 
 	return router
